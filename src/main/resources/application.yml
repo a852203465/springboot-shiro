@@ -1,0 +1,111 @@
+server:
+  port: 8080
+  host: localhost
+
+# 日志级别
+logging:
+  level:
+    root: info
+    com.unionman.shiro: info
+
+spring:
+  # mysql 配置
+  datasource:
+    url: jdbc:mysql://${server.host}:3306/shiro?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: root
+    schema: classpath:shiro.sql
+    sql-script-encoding: utf-8
+    driver-class-name: com.mysql.jdbc.Driver
+    initialization-mode: always
+    # 初始化大小，最小，最大
+    initialSize: 1
+    minIdle: 3
+    maxActive: 20
+    # 配置获取连接等待超时的时间
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 30000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    # 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,slf4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+  # jpa 配置
+  jpa:
+    database: mysql
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+
+# redis 缓存配置
+  cache:
+    redis:
+      time-to-live: 60s
+    type: redis
+  redis:
+    host: ${server.host}
+    port: 6379
+    database: 4
+    timeout: 10000ms
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 5
+        max-wait: 10000ms
+
+# 权限
+auth:
+  # AES密码加密私钥(Base64加密)
+  encryptAESKey: V2FuZzkyNjQ1NGRTQkFQSUpXVA==
+  #JWT认证加密私钥(Base64加密)
+  encryptJWTKey:  U0JBUElKV1RkV2FuZzkyNjQ1NA==
+  # AccessToken过期时间-5分钟-5*60(秒为单位)
+  accessTokenExpireTime:  1800
+  # RefreshToken过期时间-30分钟-30*60(秒为单位)
+  refreshTokenExpireTime: 3600
+  # Shiro缓存过期时间-5分钟-5*60(秒为单位)(一般设置与AccessToken过期时间一致)
+  shiroCacheExpireTime: 1800
+  encrypt: -1 # -1: 不加密, 0: 加密.  主要针对人员信息  加密方式： AES
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
