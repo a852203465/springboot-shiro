@@ -88,10 +88,6 @@ public class ShiroRealm extends AuthorizingRealm {
 
         String token = (String) authenticationToken.getCredentials();
 
-        if (jwtUtils.isTokenExpired(token)) {
-            throw new CustomUnauthorizedException(ResponseEnum.AUTHORIZATION_EXPIRES);
-        }
-
         // 解密获得account，用于和数据库进行对比
         String account = jwtUtils.getClaim(token, AuthConstant.ACCOUNT);
 
