@@ -1,7 +1,7 @@
 package com.unionman.shiro.service.impl;
 
-import com.unionman.shiro.common.enums.ResponseEnum;
-import com.unionman.shiro.common.utils.AssertUtils;
+import com.unionman.shiro.enums.ResponseEnum;
+import com.unionman.shiro.utils.AssertUtils;
 import com.unionman.shiro.entity.Permission;
 import com.unionman.shiro.entity.Role;
 import com.unionman.shiro.entity.UserInfo;

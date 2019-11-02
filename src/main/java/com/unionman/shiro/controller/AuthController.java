@@ -1,11 +1,11 @@
 package com.unionman.shiro.controller;
 
-import com.unionman.shiro.common.constants.AuthConstant;
-import com.unionman.shiro.common.constants.CommonConstant;
-import com.unionman.shiro.common.dto.PageDTO;
-import com.unionman.shiro.common.dto.PwdDTO;
-import com.unionman.shiro.common.dto.UserInfoDTO;
-import com.unionman.shiro.common.vo.*;
+import com.unionman.shiro.constants.AuthConstant;
+import com.unionman.shiro.constants.CommonConstant;
+import com.unionman.shiro.dto.PageDTO;
+import com.unionman.shiro.dto.PwdDTO;
+import com.unionman.shiro.dto.UserInfoDTO;
+import com.unionman.shiro.vo.*;
 import com.unionman.shiro.paramcheck.validator.groupvlidator.IdGroupValidator;
 import com.unionman.shiro.paramcheck.validator.groupvlidator.UserInfoGroupValidator;
 import com.unionman.shiro.service.AuthService;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiresAuthentication
 @RequestMapping("/auth/")
-@Api(value = "权限管理", description = "权限管理 controller，对接页面")
+@Api(value = "权限管理", tags = "权限管理 controller，对接页面")
 public class AuthController extends AbstractController {
 
     @Autowired

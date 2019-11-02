@@ -48,7 +48,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
 # redis 缓存配置
   cache:
@@ -74,11 +74,11 @@ auth:
   #JWT认证加密私钥(Base64加密)
   encryptJWTKey:  U0JBUElKV1RkV2FuZzkyNjQ1NA==
   # AccessToken过期时间-5分钟-5*60(秒为单位)
-  accessTokenExpireTime:  1800
+  accessTokenExpireTime:  60
   # RefreshToken过期时间-30分钟-30*60(秒为单位)
   refreshTokenExpireTime: 3600
   # Shiro缓存过期时间-5分钟-5*60(秒为单位)(一般设置与AccessToken过期时间一致)
-  shiroCacheExpireTime: 1800
+  shiroCacheExpireTime: 60
   encrypt: -1 # -1: 不加密, 0: 加密.  主要针对人员信息  加密方式： AES
 
 

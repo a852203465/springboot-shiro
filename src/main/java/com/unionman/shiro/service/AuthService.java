@@ -1,7 +1,7 @@
 package com.unionman.shiro.service;
 
-import com.unionman.shiro.common.dto.*;
-import com.unionman.shiro.common.vo.*;
+import com.unionman.shiro.dto.*;
+import com.unionman.shiro.vo.*;
 
 /**
  * @description: 权限管理 service层
@@ -14,7 +14,7 @@ public interface AuthService {
      * @description: 获取用户信息 并分页
      * @param pageDTO 分页条件
      * @author Rong.Jia
-     * @date 2019/04/17 15:25
+     * @date 2019/04/17 15:25·
      * @return PageVO<UserInfoVO> 分页数据
      */
     PageVO<UserInfoVO> findUserInfos(PageDTO pageDTO);

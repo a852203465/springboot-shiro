@@ -2,7 +2,7 @@ package com.unionman.shiro.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.unionman.shiro.common.domain.Base;
+import com.unionman.shiro.domain.Base;
 import lombok.Getter;
 import lombok.Setter;
 

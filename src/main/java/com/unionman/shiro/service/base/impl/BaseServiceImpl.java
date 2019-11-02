@@ -1,6 +1,6 @@
 package com.unionman.shiro.service.base.impl;
 
-import com.unionman.shiro.common.exception.SpringbootShiroException;
+import com.unionman.shiro.exception.SpringbootShiroException;
 import com.unionman.shiro.repository.base.BaseRepository;
 import com.unionman.shiro.service.base.BaseService;
 import lombok.extern.slf4j.Slf4j;

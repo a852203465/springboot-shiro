@@ -1,9 +1,9 @@
 package com.unionman.shiro.controller;
 
-import com.unionman.shiro.common.constants.AuthConstant;
-import com.unionman.shiro.common.utils.AssertUtils;
-import com.unionman.shiro.common.utils.JwtUtils;
-import com.unionman.shiro.common.utils.ServletUtils;
+import com.unionman.shiro.constants.AuthConstant;
+import com.unionman.shiro.utils.AssertUtils;
+import com.unionman.shiro.utils.JwtUtils;
+import com.unionman.shiro.utils.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;

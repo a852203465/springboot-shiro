@@ -1,6 +1,6 @@
 package com.unionman.shiro.service.impl;
 
-import com.unionman.shiro.common.exception.SpringbootShiroException;
+import com.unionman.shiro.exception.SpringbootShiroException;
 import com.unionman.shiro.entity.Role;
 import com.unionman.shiro.entity.UserInfo;
 import com.unionman.shiro.repository.UserInfoRepository;

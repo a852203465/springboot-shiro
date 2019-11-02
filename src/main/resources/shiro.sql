@@ -15,6 +15,7 @@
 */
 
 SET NAMES utf8mb4;
+set autocommit = 0;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
@@ -32,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `um_t_permissions` (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `permission` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 20 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of um_t_permissions
@@ -76,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `um_t_roles` (
   `updated_user` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `role` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of um_t_sys_roles
@@ -104,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `um_t_users` (
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `UK_le2k4j94hfxpuc8a1523knjc5`(`account`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of um_t_users
@@ -120,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `um_t_user_role` (
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`role_id`, `user_id`) USING BTREE,
   UNIQUE INDEX `UK_ireq85i1fxrbebj1849yrq70v`(`user_id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of um_t_user_role
@@ -136,7 +137,7 @@ CREATE TABLE  IF NOT EXISTS `um_t_role_permission`  (
   `permission_id` int(11) NOT NULL,
   PRIMARY KEY (`permission_id`, `role_id`) USING BTREE,
   INDEX `FK1yospai30vtxv4bd55oh6qo1b`(`role_id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of um_t_role_permission
@@ -193,6 +194,8 @@ INSERT IGNORE INTO `um_t_role_permission` (`role_id`, `permission_id`) VALUES (3
 INSERT IGNORE INTO `um_t_role_permission` (`role_id`, `permission_id`) VALUES (3, 24);
 INSERT IGNORE INTO `um_t_role_permission` (`role_id`, `permission_id`) VALUES (3, 25);
 
+commit;
+set autocommit = 1;
 SET FOREIGN_KEY_CHECKS = 1;
 
 
