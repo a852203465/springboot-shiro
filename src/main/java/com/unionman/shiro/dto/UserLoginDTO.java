@@ -33,4 +33,11 @@ public class UserLoginDTO implements Serializable {
     @NotBlank(message = "密码不能为空", groups = UserLoginGroupValidator.class)
     private String password;
 
+    /**
+     *  验证码
+     */
+    @ApiModelProperty(value = "验证码, 不区分大小写", required = true)
+    @NotBlank(message = "验证码不能为空", groups = UserLoginGroupValidator.class)
+    private String captcha;
+
 }

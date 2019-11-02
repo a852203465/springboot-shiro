@@ -31,6 +31,10 @@ public class CommonConstant {
 
     public static final String RESPONSE_PRODUCES = "application/json";
 
+    public static final String RESPONSE_PRODUCES_GIF = "image/gif";
+
+    public static final String RESPONSE_PRODUCES_PNG = "image/png";
+
     public static final String POINT = ".";
 
     public static final String STRIKETHROUGH = "-";

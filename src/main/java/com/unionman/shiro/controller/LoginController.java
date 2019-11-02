@@ -7,30 +7,37 @@ import com.unionman.shiro.constants.NumberConstant;
 import com.unionman.shiro.dto.UserLoginDTO;
 import com.unionman.shiro.enums.ResponseEnum;
 import com.unionman.shiro.exception.CustomUnauthorizedException;
+import com.unionman.shiro.exception.SpringbootShiroException;
+import com.unionman.shiro.paramcheck.validator.groupvlidator.UserLoginGroupValidator;
 import com.unionman.shiro.utils.AssertUtils;
 import com.unionman.shiro.utils.EncryptUtils;
 import com.unionman.shiro.utils.JwtUtils;
 import com.unionman.shiro.utils.RedisUtils;
+import com.unionman.shiro.vcode.Captcha;
+import com.unionman.shiro.vcode.GifCaptcha;
+import com.unionman.shiro.vcode.InterferenceCaptcha;
+import com.unionman.shiro.vcode.SpecCaptcha;
 import com.unionman.shiro.vo.ResponseVO;
 import com.unionman.shiro.vo.UserInfoVO;
 import com.unionman.shiro.vo.UserLoginVO;
 import com.unionman.shiro.service.AuthService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import java.util.concurrent.TimeUnit;
 
 import static com.unionman.shiro.constants.AuthConstant.*;
@@ -70,6 +77,9 @@ public class LoginController {
 
         // 校验用户
         checkUser(userInfoVO);
+
+        // 校验验证码
+        checkCaptcha(userLoginDTO.getCaptcha(), userLoginDTO.getAccount());
 
         // 密码进行AES解密
         String key = EncryptUtils.decodeAES(userInfoVO.getPassword(), authConfig.getEncryptAESKey());
@@ -112,6 +122,113 @@ public class LoginController {
         response.setHeader(AuthConstant.AUTHORIZATION, null);
 
         return ResponseVO.success();
+
+    }
+
+    @RequiresGuest
+    @ApiOperation(value = "获取验证码（Gif版本）")
+    @RequestMapping(value="getGifCode/{account}",method= RequestMethod.GET, produces = {CommonConstant.RESPONSE_PRODUCES_GIF})
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", name = "account", dataType = "string", value = "账号", required = true)
+    })
+    public void getGifCode(HttpServletRequest request, HttpServletResponse response,
+                           @PathVariable("account") @NotBlank(message = "登录账号不能为空", groups = UserLoginGroupValidator.class) String account){
+
+        log.info("getGifCode 获取验证码 account {}", account);
+
+        try {
+
+            response.setHeader("Pragma", "No-caWche");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setDateHeader("Expires", 0);
+            response.setContentType(CommonConstant.RESPONSE_PRODUCES_GIF);
+
+            //gif格式动画验证码, 宽，高，位数。
+            Captcha captcha = new GifCaptcha(NumberConstant.ONE_HUNDRED_AND_FORTY_SIX,NumberConstant.THIRTY_THREE,NumberConstant.SIX);
+
+            //输出
+            captcha.out(response.getOutputStream());
+
+            // 正确验证码
+            String vcCode = captcha.text();
+
+            // 存入缓存, 并限制为5分钟过时
+            redisUtils.getRedisTemplate().opsForValue().set(AuthConstant.PREFIX_AUTH_VC_CODE_CACHE + account, vcCode, NumberConstant.FIVE, TimeUnit.MINUTES);
+
+        } catch (Exception e) {
+            log.error("getGifCode 获取验证码异常 {}", e.getMessage());
+        }
+
+    }
+
+    @RequiresGuest
+    @ApiOperation(value = "获取验证码（png版本）")
+    @RequestMapping(value="getPngCode/{account}",method=RequestMethod.GET, produces = {CommonConstant.RESPONSE_PRODUCES_PNG})
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", name = "account", dataType = "string", value = "账号", required = true)
+    })
+    public void getPngCode(HttpServletResponse response,HttpServletRequest request,
+                           @PathVariable("account") @NotBlank(message = "登录账号不能为空", groups = UserLoginGroupValidator.class) String account){
+
+        log.info("getPngCode 获取验证码 account {}", account);
+
+        try {
+            response.setHeader("Pragma", "No-cache");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setDateHeader("Expires", 0);
+            response.setContentType(CommonConstant.RESPONSE_PRODUCES_PNG);
+
+            // jgp格式验证码 宽，高，位数。
+            Captcha captcha = new SpecCaptcha(NumberConstant.ONE_HUNDRED_AND_FORTY_SIX, NumberConstant.THIRTY_THREE, NumberConstant.SIX);
+
+            //输出
+            captcha.out(response.getOutputStream());
+
+            // 正确验证码
+            String vcCode = captcha.text();
+
+            // 存入缓存, 并限制为5分钟过时
+            redisUtils.getRedisTemplate().opsForValue().set(AuthConstant.PREFIX_AUTH_VC_CODE_CACHE + account, vcCode, NumberConstant.FIVE, TimeUnit.MINUTES);
+
+        } catch (Exception e) {
+            log.error("getPngCode 获取验证码异常 {}", e.getMessage());
+        }
+
+
+    }
+
+    @RequiresGuest
+    @ApiOperation(value = "获取验证码（png版本）, 带干扰线")
+    @RequestMapping(value="getPngCodeInterference/{account}",method=RequestMethod.GET, produces = {CommonConstant.RESPONSE_PRODUCES_PNG})
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", name = "account", dataType = "string", value = "账号", required = true)
+    })
+    public void getPngCodeInterference(HttpServletResponse response,HttpServletRequest request,
+                                       @PathVariable("account") @NotBlank(message = "登录账号不能为空", groups = UserLoginGroupValidator.class) String account){
+
+        log.info("getPngCodeInterference 获取验证码 account {}", account);
+
+        try {
+            response.setHeader("Pragma", "No-cache");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setDateHeader("Expires", 0);
+            response.setContentType(CommonConstant.RESPONSE_PRODUCES_PNG);
+
+            // png格式验证码 宽，高，位数。
+            Captcha captcha = new InterferenceCaptcha(NumberConstant.ONE_HUNDRED_AND_FORTY_SIX, NumberConstant.THIRTY_THREE, NumberConstant.SIX);
+
+            //输出
+            captcha.out(response.getOutputStream());
+
+            // 正确验证码
+            String vcCode = captcha.text();
+
+            // 存入缓存, 并限制为5分钟过时
+            redisUtils.getRedisTemplate().opsForValue().set(AuthConstant.PREFIX_AUTH_VC_CODE_CACHE + account, vcCode, NumberConstant.FIVE, TimeUnit.MINUTES);
+
+        } catch (Exception e) {
+            log.error("getPngCodeInterference 获取验证码异常 {}", e.getMessage());
+        }
 
     }
 
@@ -192,6 +309,59 @@ public class LoginController {
         }
     }
 
+    /**
+     * @description: 校验验证码
+     * @param captcha 验证吗
+     * @param account 登录账号
+     * @date 2019/07/26 13:55:33
+     * @author Rong.Jia
+     */
+    private void checkCaptcha(String captcha, String account) {
+
+        // 判断账号是否为空
+        if (AssertUtils.isNull(account)) {
+
+            log.error("checkCaptcha {}", account);
+            throw new SpringbootShiroException(ResponseEnum.ACCOUNT_IS_EMPTY);
+
+        }
+
+        // 判断验证码是否为空
+        if (AssertUtils.isNull(captcha)) {
+
+            log.error("The verification code cannot be empty");
+            throw new CustomUnauthorizedException(ResponseEnum.THE_VERIFICATION_CODE_IS_EMPTY);
+
+        }
+
+        // 校验验证码
+
+        // 缓存key
+        String cacheKey = AuthConstant.PREFIX_AUTH_VC_CODE_CACHE + account;
+
+        if (!redisUtils.hasKey(cacheKey)) {
+
+            log.error("The verification code is out of date ");
+            throw new CustomUnauthorizedException(ResponseEnum.VERIFICATION_CODE_OUT_OF_DATE_PLEASE_RETRIEVE_IT_AGAIN);
+        }else {
+
+            // 正确的验证码
+            String vcCode = redisUtils.get(AuthConstant.PREFIX_AUTH_VC_CODE_CACHE + account, String.class);
+
+            // 判断验证码是否相同
+            if (!StringUtils.equalsIgnoreCase(captcha, vcCode)) {
+
+                log.error("Incorrect verification code input");
+                throw new CustomUnauthorizedException(ResponseEnum.THE_VERIFICATION_CODE_IS_INCORRECT);
+
+            }
+
+            //  删除缓存
+            redisUtils.del(cacheKey);
+
+        }
+
+    }
 
 
 

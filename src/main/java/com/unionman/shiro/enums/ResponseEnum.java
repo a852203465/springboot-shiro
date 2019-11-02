@@ -74,7 +74,10 @@ public enum ResponseEnum {
     PASSWORD_CHECK_FAILED(5032, "密码校验失败, 请求检查原密码是否输入正确"),
     THE_OLD_PASSWORD_IS_THE_SAME_AS_THE_NEW_ONE(5033, "旧密码与新密码相同, 请重新输入新密码"),
 
-    USER_NAME_OR_PASSWORD_ERRORS_GREATER_THAN_5_TIMES(3002,"用户名或密码错误次数大于5次,账户已锁定, 请10分钟后再次访问"),
+    USER_NAME_OR_PASSWORD_ERRORS_GREATER_THAN_5_TIMES(5034,"用户名或密码错误次数大于5次,账户已锁定, 请10分钟后再次访问"),
+    VERIFICATION_CODE_OUT_OF_DATE_PLEASE_RETRIEVE_IT_AGAIN(5035, "验证码过时, 请重新获取"),
+    THE_VERIFICATION_CODE_IS_EMPTY(5036, "验证码为空, 请重新输入"),
+    THE_VERIFICATION_CODE_IS_INCORRECT(5037, "验证码不正确 , 请重新输入"),
 
 
 

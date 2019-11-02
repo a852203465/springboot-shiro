@@ -80,5 +80,11 @@ public class AuthConstant {
      */
     public static final List<String> USER_LOCK_UN = Arrays.asList("LOCK", "UNLOCK");
 
+    /**
+     * redis-key-前缀-auth:vc_cache:
+     */
+    public final static String PREFIX_AUTH_VC_CODE_CACHE = "auth:vc_cache:";
+
+
 
 }
